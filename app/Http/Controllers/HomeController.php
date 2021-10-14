@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use App\Http\Requests\StorePostRequest;
+use App\Models\Category;
 
 class HomeController extends Controller
 {
@@ -25,8 +26,9 @@ class HomeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {
-        return view('create');
+    {   
+        $categories = Category::all();
+        return view('create',compact('categories'));
     }
 
     /**
@@ -38,21 +40,8 @@ class HomeController extends Controller
     public function store(StorePostRequest $request)
     {   
 
-        // Retrieve the validated input data...
-        // $validated = $request->validated();
-
-        /*
-        $post = new Post();
-        $post->name = $request->name;
-        $post->description = $request->description;
-
-        $post->save();
-        */
-
-        Post::create([
-            'name' => $request->name,
-            'description' => $request->description,
-        ]);
+        $validated = $request->validated();
+        Post::create($validated);
 
         return redirect('/posts');
     }
@@ -65,7 +54,6 @@ class HomeController extends Controller
      */
     public function show(Post $post)
     {   
-        // $post = Post::findOrFail($id);
 
         return view('show',compact('post'));
     }
@@ -78,9 +66,9 @@ class HomeController extends Controller
      */
     public function edit(Post $post)
     {
-        //$post = Post::findOrFail($id);
 
-        return view('edit',compact('post'));
+        $categories = Category::all();
+        return view('edit',compact('post','categories'));
     }
 
     /**
@@ -92,18 +80,9 @@ class HomeController extends Controller
      */
     public function update(StorePostRequest $request, Post $post)
     {   
-        
-        //$post = Post::findOrFail($id);
-        /*
-        $post->name = $request->name;
-        $post->description = $request->description;
-        $post->save();
-        */
 
-        $post->update([
-            'name' => $request->name,
-            'description' => $request->description,
-        ]);
+        $validated = $request->validated();
+        $post->update($validated);
 
         return redirect('/posts');
 
@@ -117,7 +96,6 @@ class HomeController extends Controller
      */
     public function destroy(Post $post)
     {
-        //Post::findOrFail($id)->delete();
 
         $post->delete();
         return redirect('/posts');
