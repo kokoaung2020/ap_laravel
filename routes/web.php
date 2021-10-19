@@ -1,8 +1,11 @@
 <?php
 
+use App\Test;
+use App\Container;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
+use App\TestFacade;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,7 +18,11 @@ use App\Http\Controllers\HomeController;
 |
 */
 
-//Route::get('/', [HomeController::class, 'index']);
+Route::get('/', function(){
+    dd(app('test')->execute());
+});
+
+
 Route::resource('posts', HomeController::class)->middleware(['auth:sanctum', 'verified']);
 
 Route::get('logout', [AuthController::class,'logout']);

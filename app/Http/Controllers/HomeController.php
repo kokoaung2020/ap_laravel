@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Test;
 use App\Models\Post;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Requests\StorePostRequest;
-use App\Models\Category;
 
 class HomeController extends Controller
 {
@@ -52,11 +53,9 @@ class HomeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Post $post)
+    public function show(Post $post,Test $test)
     {   
-        // if($post->user_id != auth()->id()){
-        //     abort(403);
-        // }
+        dd($test);
         $this->authorize('view', $post);
         return view('show',compact('post'));
     }
@@ -69,9 +68,6 @@ class HomeController extends Controller
      */
     public function edit(Post $post)
     {
-        // if($post->user_id != auth()->id()){
-        //     abort(403);
-        // }
         $this->authorize('view', $post);
         $categories = Category::all();
         return view('edit',compact('post','categories'));
