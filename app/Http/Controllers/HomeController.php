@@ -6,7 +6,12 @@ use App\Test;
 use App\Models\Post;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StorePostRequest;
+use App\Mail\PostCreated;
+use App\Mail\StoredPost;
+use Illuminate\Support\Facades\Mail;
+use App\Policies\PostPolicy;
 
 class HomeController extends Controller
 {
@@ -14,9 +19,20 @@ class HomeController extends Controller
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
+     *
      */
-    public function index()
+    public function __construct()
     {
+        $this->middleware('auth');
+    }
+
+    public function index()
+    {   
+        // Mail::raw('Hello World',function($smg){
+        //     $smg->to('kokoaung2019aungaung@gmail.com')->subject('AP Index Function');
+        // });
+
+        //dd(config('ap.info.third'));
         $data = Post::where('user_id',auth()->id())->orderBy('id','desc')->get();
         return view('home',compact('data'));
     }
@@ -42,9 +58,11 @@ class HomeController extends Controller
     {   
 
         $validated = $request->validated();
-        Post::create($validated);
+        $post = Post::create($validated + ['user_id'=>Auth::user()->id]);
 
-        return redirect('/posts');
+       // Mail::to('kokoaung2019aungaung@gmail.com')->send(new PostCreated()); //StoredPost($post)
+
+        return redirect('/posts')->with('status', config('ap.message.created'));
     }
 
     /**
@@ -53,9 +71,9 @@ class HomeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Post $post,Test $test)
+    public function show(Post $post) //,Test $test
     {   
-        dd($test);
+        //dd($test);
         $this->authorize('view', $post);
         return view('show',compact('post'));
     }
@@ -86,7 +104,7 @@ class HomeController extends Controller
         $validated = $request->validated();
         $post->update($validated);
 
-        return redirect('/posts');
+        return redirect('/posts')->with('status', config('ap.message.updated'));
 
     }
 

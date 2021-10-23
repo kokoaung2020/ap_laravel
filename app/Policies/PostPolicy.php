@@ -42,7 +42,7 @@ class PostPolicy
      */
     public function create(User $user)
     {
-        //
+        
     }
 
     /**
@@ -54,7 +54,7 @@ class PostPolicy
      */
     public function update(User $user, Post $post)
     {
-        //
+    
     }
 
     /**

@@ -5,7 +5,15 @@
     <a href="/posts/create" class="btn btn-success">New Post</a>
     <a href="/logout" class="btn btn-danger">Log Out</a>
     <h5 style="float: right;">{{Auth::user()->name}}</h5>
+  </div><br>
+
+  @if (session('status'))
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>Success!</strong> {{ session('status') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
+   @endif
+  
 <div class="card">
   <h5 class="card-header" style="text-align: center;">Content</h5>
   <div class="card-body">
