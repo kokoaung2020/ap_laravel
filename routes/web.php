@@ -19,7 +19,8 @@ use App\TestFacade;
 */
 
 Route::get('/', function(){
-    dd(app('test')->execute());
+    //dd(app('test')->execute());
+    return view('welcome');
 });
 
 

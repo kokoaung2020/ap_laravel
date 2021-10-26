@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PostCreateEvent;
 use App\Test;
 use App\Models\Post;
+use App\Models\User;
+use App\Mail\StoredPost;
 use App\Models\Category;
+use App\Mail\PostCreated;
+use App\Policies\PostPolicy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\StorePostRequest;
-use App\Mail\PostCreated;
-use App\Mail\StoredPost;
 use Illuminate\Support\Facades\Mail;
-use App\Policies\PostPolicy;
+use App\Http\Requests\StorePostRequest;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\PostCreatedNotification;
 
 class HomeController extends Controller
 {
@@ -28,11 +32,12 @@ class HomeController extends Controller
 
     public function index()
     {   
-        // Mail::raw('Hello World',function($smg){
-        //     $smg->to('kokoaung2019aungaung@gmail.com')->subject('AP Index Function');
-        // });
+        // $user = User::find(24);
+        // $user->notify(new PostCreatedNotification()); //send using user model 
 
-        //dd(config('ap.info.third'));
+        // //Notification::send(User::find(24), new PostCreatedNotification());
+        // echo "email send"; exit();
+
         $data = Post::where('user_id',auth()->id())->orderBy('id','desc')->get();
         return view('home',compact('data'));
     }
@@ -60,7 +65,7 @@ class HomeController extends Controller
         $validated = $request->validated();
         $post = Post::create($validated + ['user_id'=>Auth::user()->id]);
 
-       // Mail::to('kokoaung2019aungaung@gmail.com')->send(new PostCreated()); //StoredPost($post)
+       event(new PostCreateEvent($post));
 
         return redirect('/posts')->with('status', config('ap.message.created'));
     }

@@ -27,9 +27,9 @@ class Post extends Model
 
     protected static function booted()
     {
-        static::created(function ($post) {
-            Mail::to('kokoaung2019aungaung@gmail.com')->send(new StoredPost($post));
-        });
+        // static::created(function ($post) {
+        //     Mail::to('kokoaung2019aungaung@gmail.com')->send(new StoredPost($post));
+        // });
     }
 
 }
